@@ -1,0 +1,484 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "workflow/workflow.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/workflows": {
+      "get": {
+        "operationId": "WorkflowSvc_ListWorkflows",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/workflowWorkflow"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of workflowWorkflow"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "tags": [
+          "WorkflowSvc"
+        ]
+      },
+      "post": {
+        "operationId": "WorkflowSvc_CreateWorkflow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/workflowCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/workflowCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WorkflowSvc"
+        ]
+      }
+    },
+    "/v1/workflows/{id}": {
+      "get": {
+        "operationId": "WorkflowSvc_GetWorkflow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/workflowWorkflow"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowSvc"
+        ]
+      },
+      "delete": {
+        "operationId": "WorkflowSvc_DeleteWorkflow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/workflowEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowSvc"
+        ]
+      }
+    },
+    "/v1/workflows/{id}/events": {
+      "get": {
+        "operationId": "WorkflowSvc_ShowWorkflowEvents",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/workflowWorkflowActionStatus"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of workflowWorkflowActionStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowSvc"
+        ]
+      }
+    },
+    "/v1/workflows/{id}/state": {
+      "get": {
+        "operationId": "WorkflowSvc_GetWorkflowContext",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/workflowWorkflowContext"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowSvc"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "workflowActionState": {
+      "type": "string",
+      "enum": [
+        "ACTION_PENDING",
+        "ACTION_IN_PROGRESS",
+        "ACTION_SUCCESS",
+        "ACTION_FAILED",
+        "ACTION_TIMEOUT"
+      ],
+      "default": "ACTION_PENDING"
+    },
+    "workflowCreateRequest": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "hardware": {
+          "type": "string"
+        }
+      }
+    },
+    "workflowCreateResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "workflowEmpty": {
+      "type": "object"
+    },
+    "workflowGetWorkflowDataResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "format": "byte"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "workflowState": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "FAILED",
+        "TIMEOUT",
+        "SUCCESS"
+      ],
+      "default": "PENDING"
+    },
+    "workflowWorkflow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "hardware": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/workflowState"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "string"
+        }
+      }
+    },
+    "workflowWorkflowAction": {
+      "type": "object",
+      "properties": {
+        "task_name": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "on_timeout": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "on_failure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "worker_id": {
+          "type": "string"
+        },
+        "volumes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "workflowWorkflowActionList": {
+      "type": "object",
+      "properties": {
+        "action_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/workflowWorkflowAction"
+          }
+        }
+      }
+    },
+    "workflowWorkflowActionStatus": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "action_name": {
+          "type": "string"
+        },
+        "action_status": {
+          "$ref": "#/definitions/workflowActionState"
+        },
+        "seconds": {
+          "type": "string",
+          "format": "int64"
+        },
+        "message": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "worker_id": {
+          "type": "string"
+        }
+      }
+    },
+    "workflowWorkflowContext": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string"
+        },
+        "current_worker": {
+          "type": "string"
+        },
+        "current_task": {
+          "type": "string"
+        },
+        "current_action": {
+          "type": "string"
+        },
+        "current_action_index": {
+          "type": "string",
+          "format": "int64"
+        },
+        "current_action_state": {
+          "$ref": "#/definitions/workflowActionState"
+        },
+        "total_number_of_actions": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "workflowWorkflowContextList": {
+      "type": "object",
+      "properties": {
+        "workflow_contexts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/workflowWorkflowContext"
+          }
+        }
+      }
+    }
+  }
+}

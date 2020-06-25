@@ -1,0 +1,789 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "hardware/hardware.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/hardware": {
+      "get": {
+        "operationId": "HardwareService_All",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/hardwareHardware"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of hardwareHardware"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "tags": [
+          "HardwareService"
+        ]
+      },
+      "post": {
+        "operationId": "HardwareService_Push",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hardwareEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hardwarePushRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HardwareService"
+        ]
+      }
+    },
+    "/v1/hardware/ip": {
+      "post": {
+        "operationId": "HardwareService_ByIP",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hardwareHardware"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hardwareGetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HardwareService"
+        ]
+      }
+    },
+    "/v1/hardware/mac": {
+      "post": {
+        "operationId": "HardwareService_ByMAC",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hardwareHardware"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hardwareGetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HardwareService"
+        ]
+      }
+    },
+    "/v1/hardware/{id}": {
+      "get": {
+        "operationId": "HardwareService_ByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hardwareHardware"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "mac",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ip",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HardwareService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "DiskPartition": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string",
+          "format": "int64"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        },
+        "start": {
+          "type": "string",
+          "format": "int64"
+        },
+        "type_guid": {
+          "type": "string"
+        }
+      }
+    },
+    "HardwareDHCP": {
+      "type": "object",
+      "properties": {
+        "mac": {
+          "type": "string"
+        },
+        "OBSOLETE_ip": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "lease_time": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name_servers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_servers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "OBSOLETE_gateway": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "uefi": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "iface_name": {
+          "type": "string"
+        },
+        "ip": {
+          "$ref": "#/definitions/HardwareDHCPIP"
+        }
+      }
+    },
+    "HardwareDHCPIP": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "netmask": {
+          "type": "string"
+        },
+        "gateway": {
+          "type": "string"
+        },
+        "family": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "HardwareMetadata": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "bonding_mode": {
+          "type": "string",
+          "format": "int64"
+        },
+        "manufacturer": {
+          "$ref": "#/definitions/MetadataManufacturer"
+        },
+        "instance": {
+          "$ref": "#/definitions/MetadataInstance"
+        },
+        "custom": {
+          "$ref": "#/definitions/MetadataCustom"
+        },
+        "facility": {
+          "$ref": "#/definitions/MetadataFacility"
+        }
+      }
+    },
+    "HardwareNetboot": {
+      "type": "object",
+      "properties": {
+        "allow_pxe": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "allow_workflow": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "ipxe": {
+          "$ref": "#/definitions/NetbootIPXE"
+        },
+        "OBSOLETE_bootstrapper": {
+          "$ref": "#/definitions/NetbootBootstrapper"
+        },
+        "osie": {
+          "$ref": "#/definitions/NetbootOsie"
+        }
+      }
+    },
+    "HardwareNetwork": {
+      "type": "object",
+      "properties": {
+        "OBSOLETE_dhcp": {
+          "$ref": "#/definitions/HardwareDHCP"
+        },
+        "OBSOLETE_netboot": {
+          "$ref": "#/definitions/HardwareNetboot"
+        },
+        "interfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NetworkInterface"
+          }
+        },
+        "OBSOLETE_default": {
+          "$ref": "#/definitions/NetworkInterface"
+        }
+      }
+    },
+    "InstanceOperatingSystem": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "distro": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "image_tag": {
+          "type": "string"
+        },
+        "os_slug": {
+          "type": "string"
+        }
+      }
+    },
+    "InstanceStorage": {
+      "type": "object",
+      "properties": {
+        "OBSOLETE_disks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "OBSOLETE_raid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "OBSOLETE_filesystems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageDisk"
+          }
+        },
+        "raid": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageRAID"
+          }
+        },
+        "filesystems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageFilesystem"
+          }
+        }
+      }
+    },
+    "MetadataCustom": {
+      "type": "object",
+      "properties": {
+        "preinstalled_operating_system_version": {
+          "$ref": "#/definitions/InstanceOperatingSystem"
+        },
+        "private_subnets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "MetadataFacility": {
+      "type": "object",
+      "properties": {
+        "plan_slug": {
+          "type": "string"
+        },
+        "plan_version_slug": {
+          "type": "string"
+        },
+        "facility_code": {
+          "type": "string"
+        }
+      }
+    },
+    "MetadataInstance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "allow_pxe": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "rescue": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "operating_system_version": {
+          "$ref": "#/definitions/InstanceOperatingSystem"
+        },
+        "always_pxe": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "ipxe_script_url": {
+          "type": "string"
+        },
+        "ips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MetadataInstanceIP"
+          }
+        },
+        "userdata": {
+          "type": "string"
+        },
+        "crypted_root_password": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "storage": {
+          "$ref": "#/definitions/InstanceStorage"
+        },
+        "ssh_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "network_ready": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "MetadataInstanceIP": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "netmask": {
+          "type": "string"
+        },
+        "gateway": {
+          "type": "string"
+        },
+        "family": {
+          "type": "string",
+          "format": "int64"
+        },
+        "public": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "management": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "MetadataManufacturer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "MountFilesystemOptions": {
+      "type": "object",
+      "properties": {
+        "force": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NetbootBootstrapper": {
+      "type": "object"
+    },
+    "NetbootIPXE": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "contents": {
+          "type": "string"
+        }
+      }
+    },
+    "NetbootOsie": {
+      "type": "object",
+      "properties": {
+        "base_url": {
+          "type": "string"
+        },
+        "kernel": {
+          "type": "string"
+        },
+        "initrd": {
+          "type": "string"
+        }
+      }
+    },
+    "NetworkInterface": {
+      "type": "object",
+      "properties": {
+        "dhcp": {
+          "$ref": "#/definitions/HardwareDHCP"
+        },
+        "netboot": {
+          "$ref": "#/definitions/HardwareNetboot"
+        }
+      }
+    },
+    "StorageDisk": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "string"
+        },
+        "wipe_table": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "partitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiskPartition"
+          }
+        }
+      }
+    },
+    "StorageFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "contents": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "gid": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "StorageFilesystem": {
+      "type": "object",
+      "properties": {
+        "mount": {
+          "$ref": "#/definitions/StorageMount"
+        }
+      }
+    },
+    "StorageMount": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageFile"
+          }
+        },
+        "create": {
+          "$ref": "#/definitions/MountFilesystemOptions"
+        },
+        "point": {
+          "type": "string"
+        }
+      }
+    },
+    "StorageRAID": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "spare": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "hardwareEmpty": {
+      "type": "object"
+    },
+    "hardwareGetRequest": {
+      "type": "object",
+      "properties": {
+        "mac": {
+          "type": "string"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "hardwareHardware": {
+      "type": "object",
+      "properties": {
+        "OBSOLETE_JSON": {
+          "type": "string"
+        },
+        "OBSOLETE_dhcp": {
+          "$ref": "#/definitions/HardwareDHCP"
+        },
+        "OBSOLETE_netboot": {
+          "$ref": "#/definitions/HardwareNetboot"
+        },
+        "OBSOLETE_network": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HardwareNetwork"
+          }
+        },
+        "metadata": {
+          "$ref": "#/definitions/HardwareMetadata"
+        },
+        "network": {
+          "$ref": "#/definitions/HardwareNetwork"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "hardwarePushRequest": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/hardwareHardware"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
