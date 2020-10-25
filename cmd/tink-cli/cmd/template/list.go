@@ -43,7 +43,7 @@ var listCmd = &cobra.Command{
 }
 
 func listTemplates(cmd *cobra.Command, t table.Writer) {
-	list, err := client.TemplateClient.ListTemplates(context.Background(), &template.FilterRequest{Filter: "%"})
+	list, err := client.TemplateClient.ListTemplates(context.Background(), &template.FilterRequest{Filter: "*"})
 	if err != nil {
 		log.Fatal(err)
 	}

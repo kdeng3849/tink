@@ -2,6 +2,7 @@ package grpcserver
 
 import (
 	"context"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/google/uuid"
@@ -106,6 +107,11 @@ func (s *server) ListTemplates(in *template.FilterRequest, stream template.Templ
 	metrics.CacheInFlight.With(labels).Inc()
 	defer metrics.CacheInFlight.With(labels).Dec()
 
+	filter := "%" // default filter will match everything
+	if in.Filter != "" {
+		filter = strings.ReplaceAll(in.Filter, "*", "%") // replace '*' with psql '%' wildcard
+	}
+
 	s.dbLock.RLock()
 	ready := s.dbReady
 	s.dbLock.RUnlock()
@@ -116,7 +122,7 @@ func (s *server) ListTemplates(in *template.FilterRequest, stream template.Templ
 
 	timer := prometheus.NewTimer(metrics.CacheDuration.With(labels))
 	defer timer.ObserveDuration()
-	err := s.db.ListTemplates(in.Filter, func(id, n string, crTime, upTime *timestamp.Timestamp) error {
+	err := s.db.ListTemplates(filter, func(id, n string, crTime, upTime *timestamp.Timestamp) error {
 		return stream.Send(&template.WorkflowTemplate{Id: id, Name: n, CreatedAt: crTime, UpdatedAt: upTime})
 	})
 

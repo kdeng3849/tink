@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	tt "text/template"
 
 	"github.com/golang/protobuf/jsonpb" // nolint:staticcheck
@@ -322,9 +321,9 @@ func RegisterTemplateHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 	// template list handler | GET /v1/templates?filter=
 	templateListPattern := runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "templates"}, "", runtime.AssumeColonVerbOpt(true)))
 	mux.Handle("GET", templateListPattern, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		filter := "%" // default filter will match everything
+		filter := "*" // default filter will match everything
 		if req.URL.RawQuery != "" {
-			filter = strings.ReplaceAll(req.URL.Query()["filter"][0], "*", "%")
+			filter = req.URL.Query()["filter"][0]
 		}
 
 		list, err := client.ListTemplates(context.Background(), &template.FilterRequest{Filter: filter})
