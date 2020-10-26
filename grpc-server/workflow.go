@@ -271,7 +271,7 @@ func (s *server) ShowWorkflowEvents(req *workflow.GetRequest, stream workflow.Wo
 }
 
 func createYaml(ctx context.Context, db db.Database, temp string, devices string) (string, error) {
-	_, tempData, err := db.GetTemplate(ctx, temp)
+	_, tempData, err := db.GetTemplateByID(ctx, temp)
 	if err != nil {
 		return "", errors.Wrapf(err, errFailedToGetTemplate, temp)
 	}

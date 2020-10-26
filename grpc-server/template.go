@@ -43,14 +43,14 @@ func (s *server) CreateTemplate(ctx context.Context, in *template.WorkflowTempla
 	return &template.CreateResponse{Id: id.String()}, err
 }
 
-// GetTemplate implements template.GetTemplate
-func (s *server) GetTemplate(ctx context.Context, in *template.GetRequest) (*template.WorkflowTemplate, error) {
-	logger.Info("gettemplate")
+// GetTemplateByID implements template.GetTemplateByID
+func (s *server) GetTemplateByID(ctx context.Context, in *template.GetRequest) (*template.WorkflowTemplate, error) {
+	logger.Info("gettemplatebyid")
 	labels := prometheus.Labels{"method": "GetTemplate", "op": ""}
 	metrics.CacheInFlight.With(labels).Inc()
 	defer metrics.CacheInFlight.With(labels).Dec()
 
-	const msg = "getting a template"
+	const msg = "getting a template by id"
 	labels["op"] = "get"
 
 	metrics.CacheTotals.With(labels).Inc()
@@ -58,7 +58,35 @@ func (s *server) GetTemplate(ctx context.Context, in *template.GetRequest) (*tem
 	defer timer.ObserveDuration()
 
 	logger.Info(msg)
-	n, d, err := s.db.GetTemplate(ctx, in.Id)
+	n, d, err := s.db.GetTemplateByID(ctx, in.Id)
+	logger.Info("done " + msg)
+	if err != nil {
+		metrics.CacheErrors.With(labels).Inc()
+		l := logger
+		if pqErr := db.Error(err); pqErr != nil {
+			l = l.With("detail", pqErr.Detail, "where", pqErr.Where)
+		}
+		l.Error(err)
+	}
+	return &template.WorkflowTemplate{Id: in.Id, Name: n, Data: d}, err
+}
+
+// GetTemplateByName implements template.GetTemplateByName
+func (s *server) GetTemplateByName(ctx context.Context, in *template.GetRequest) (*template.WorkflowTemplate, error) {
+	logger.Info("gettemplatebyname")
+	labels := prometheus.Labels{"method": "GetTemplate", "op": ""}
+	metrics.CacheInFlight.With(labels).Inc()
+	defer metrics.CacheInFlight.With(labels).Dec()
+
+	const msg = "getting a template by name"
+	labels["op"] = "get"
+
+	metrics.CacheTotals.With(labels).Inc()
+	timer := prometheus.NewTimer(metrics.CacheDuration.With(labels))
+	defer timer.ObserveDuration()
+
+	logger.Info(msg)
+	n, d, err := s.db.GetTemplateByName(ctx, in.Name)
 	logger.Info("done " + msg)
 	if err != nil {
 		metrics.CacheErrors.With(labels).Inc()

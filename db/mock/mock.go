@@ -23,6 +23,7 @@ type DB struct {
 	UpdateWorkflowStateFunc          func(ctx context.Context, wfContext *pb.WorkflowContext) error
 	InsertIntoWorkflowEventTableFunc func(ctx context.Context, wfEvent *pb.WorkflowActionStatus, time time.Time) error
 	// template
-	TemplateDB      map[string]interface{}
-	GetTemplateFunc func(ctx context.Context, id string) (string, string, error)
+	TemplateDB            map[string]interface{}
+	GetTemplateByIDFunc   func(ctx context.Context, id string) (string, string, error)
+	GetTemplateByNameFunc func(ctx context.Context, n string) (string, string, error)
 }

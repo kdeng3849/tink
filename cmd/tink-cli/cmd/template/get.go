@@ -30,7 +30,7 @@ var getCmd = &cobra.Command{
 	Run: func(c *cobra.Command, args []string) {
 		for _, arg := range args {
 			req := template.GetRequest{Id: arg}
-			t, err := client.TemplateClient.GetTemplate(context.Background(), &req)
+			t, err := client.TemplateClient.GetTemplateByID(context.Background(), &req)
 			if err != nil {
 				log.Fatal(err)
 			}

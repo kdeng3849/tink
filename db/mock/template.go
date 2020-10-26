@@ -31,9 +31,14 @@ func (d DB) CreateTemplate(ctx context.Context, name string, data string, id uui
 	return nil
 }
 
-// GetTemplate returns a workflow template
-func (d DB) GetTemplate(ctx context.Context, id string) (string, string, error) {
-	return d.GetTemplateFunc(ctx, id)
+// GetTemplateByID returns a workflow template with the requested ID
+func (d DB) GetTemplateByID(ctx context.Context, id string) (string, string, error) {
+	return d.GetTemplateByIDFunc(ctx, id)
+}
+
+// GetTemplateByName returns a workflow template with the requested name
+func (d DB) GetTemplateByName(ctx context.Context, n string) (string, string, error) {
+	return d.GetTemplateByNameFunc(ctx, n)
 }
 
 // DeleteTemplate deletes a workflow template
@@ -46,7 +51,7 @@ func (d DB) DeleteTemplate(ctx context.Context, name string) error {
 }
 
 // ListTemplates returns all saved templates
-func (d DB) ListTemplates(fn func(id, n string, in, del *timestamp.Timestamp) error) error {
+func (d DB) ListTemplates(in string, fn func(id, n string, in, del *timestamp.Timestamp) error) error {
 	return nil
 }
 
