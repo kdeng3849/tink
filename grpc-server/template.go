@@ -99,7 +99,7 @@ func (s *server) DeleteTemplate(ctx context.Context, in *template.GetRequest) (*
 }
 
 // ListTemplates implements template.ListTemplates
-func (s *server) ListTemplates(_ *template.Empty, stream template.TemplateService_ListTemplatesServer) error {
+func (s *server) ListTemplates(in *template.FilterRequest, stream template.TemplateService_ListTemplatesServer) error {
 	logger.Info("listtemplates")
 	labels := prometheus.Labels{"method": "ListTemplates", "op": "list"}
 	metrics.CacheTotals.With(labels).Inc()
@@ -116,7 +116,7 @@ func (s *server) ListTemplates(_ *template.Empty, stream template.TemplateServic
 
 	timer := prometheus.NewTimer(metrics.CacheDuration.With(labels))
 	defer timer.ObserveDuration()
-	err := s.db.ListTemplates(func(id, n string, crTime, upTime *timestamp.Timestamp) error {
+	err := s.db.ListTemplates(in.Filter, func(id, n string, crTime, upTime *timestamp.Timestamp) error {
 		return stream.Send(&template.WorkflowTemplate{Id: id, Name: n, CreatedAt: crTime, UpdatedAt: upTime})
 	})
 

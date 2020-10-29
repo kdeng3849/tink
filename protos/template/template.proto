@@ -14,9 +14,14 @@ service TemplateService {
       body: "*"
     };
   };
-  rpc GetTemplate(GetRequest) returns (WorkflowTemplate) {
+  rpc GetTemplateByID(GetRequest) returns (WorkflowTemplate) {
     option (google.api.http) = {
       get: "/v1/templates/{id}"
+    };
+  };
+  rpc GetTemplateByName(GetRequest) returns (WorkflowTemplate) {
+    option (google.api.http) = {
+      get: "/v1/templates/name/{name}"
     };
   };
   rpc DeleteTemplate(GetRequest) returns (Empty) {
@@ -24,7 +29,7 @@ service TemplateService {
       delete: "/v1/templates/{id}"
     };
   };
-  rpc ListTemplates(Empty) returns (stream WorkflowTemplate) {
+  rpc ListTemplates(FilterRequest) returns (stream WorkflowTemplate) {
     option (google.api.http) = {
       get: "/v1/templates"
     };
@@ -51,4 +56,9 @@ message CreateResponse {
 
 message GetRequest {
   string id = 1;
+  string name = 2;
+}
+
+message FilterRequest {
+  string filter = 1;
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	tt "text/template"
 
 	"github.com/golang/protobuf/jsonpb" // nolint:staticcheck
@@ -318,10 +319,15 @@ func RegisterTemplateHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 		writeResponse(w, http.StatusOK, fmt.Sprintf(`{"status": "ok", "msg": "template deleted successfully", "id": "%v"}`, gr.Id))
 	})
 
-	// template list handler | GET /v1/templates
+	// template list handler | GET /v1/templates?filter=
 	templateListPattern := runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "templates"}, "", runtime.AssumeColonVerbOpt(true)))
 	mux.Handle("GET", templateListPattern, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		list, err := client.ListTemplates(context.Background(), &template.Empty{})
+		filter := "%" // default filter will match everything
+		if req.URL.RawQuery != "" {
+			filter = strings.ReplaceAll(req.URL.Query()["filter"][0], "*", "%")
+		}
+
+		list, err := client.ListTemplates(context.Background(), &template.FilterRequest{Filter: filter})
 		if err != nil {
 			logger.Error(err)
 			writeResponse(w, http.StatusInternalServerError, err.Error())
