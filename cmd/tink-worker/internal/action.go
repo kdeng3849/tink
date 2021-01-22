@@ -34,6 +34,7 @@ func (w *Worker) createContainer(ctx context.Context, cmd []string, wfID string,
 
 	wfDir := filepath.Join(dataDir, wfID)
 	hostConfig := &container.HostConfig{
+		NetworkMode: "host",
 		Privileged: true,
 		Binds:      []string{wfDir + ":/workflow"},
 	}
